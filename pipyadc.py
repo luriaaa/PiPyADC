@@ -373,6 +373,8 @@ class ADS1256(object):
     def _read_int24(self):
         # Returns signed int interpretation of three bytes read via the SPI bus
         _, data = wp.wiringPiSPIDataRW(self.SPI_CHANNEL, b"\xFF\xFF\xFF")
+        #unpack and right shift binary value 8 piece
+        #data was packed as bi-ending and integer mode
         return struct.unpack(">i", data + b"\x00")[0] >> 8
         # Python3 only:
         # return int.from_bytes(data, "big", signed=True)
