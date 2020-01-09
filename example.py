@@ -59,12 +59,15 @@ SHORT_CIRCUIT = POS_AIN0|NEG_AIN0
 CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT7, POTI_INVERTED, SHORT_CIRCUIT)
 ################################################################################
 
-
+#why here we dont need to pass a CH_SEQUENCE to the method? We are ABLE to access 
+#CH_SEQUENCE within def ... after it (but we can't modify it within the function)
 def do_measurement():
     ### STEP 1: Initialise ADC object using default configuration:
     # (Note1: See ADS1256_default_config.py, see ADS1256 datasheet)
     # (Note2: Input buffer on means limited voltage range 0V...3V for 5V supply)
+    #create a new class following class rule ADS1256, named ads
     ads = ADS1256()
+    #if you want to set v_ref, use ads.v_ref(5)
 
     ### STEP 2: Gain and offset self-calibration:
     ads.cal_self()
@@ -86,18 +89,19 @@ def nice_output(digits, volts):
     sys.stdout.write(
           "\0337" # Store cursor position
         +
+# Things within the 3x "" is regarded as __doc__ content
 """
 These are the raw sample values for the channels:
 Poti_CH0,  LDR_CH1,     AIN2,     AIN3,     AIN4,     AIN7, Poti NEG, Short 0V
 """
-        + ", ".join(["{: 8d}".format(i) for i in digits])
+        + ", ".join(["{: 8d}".format(i) for i in digits]) #comma to separate, a,b,c,d..., for each number, "8d" means it leaves 8 spaces (so if you have 8 digit will fill the column to the left, d=integer)
         +
 """
 
 These are the sample values converted to voltage in V for the channels:
 Poti_CH0,  LDR_CH1,     AIN2,     AIN3,     AIN4,     AIN7, Poti NEG, Short 0V
 """
-        + ", ".join(["{: 8.3f}".format(i) for i in volts])
+        + ", ".join(["{: 8.3f}".format(i) for i in volts]) #leave 8 spaces, output in .000 type
         + "\n\033[J\0338" # Restore cursor position etc.
     )
 
